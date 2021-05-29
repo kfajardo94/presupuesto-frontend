@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.title) {
-      this.title = 'The';
+      this.title = 'Página Prueba';
     }
 
   }
