@@ -6,6 +6,7 @@ export class Producto {
   categoriaId: number;
   precio: number;
   disponibilidad: number;
+
   imagen64: string;
   imagen: string;
 
