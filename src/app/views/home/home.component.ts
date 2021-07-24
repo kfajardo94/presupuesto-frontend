@@ -18,9 +18,11 @@ export class HomeComponent implements OnInit {
   presupuesto: Presupuesto;
   gastosIngresos: GastosIngresos;
   format = '';
+  deshabilitarEliminar = false;
 
   constructor(private service: Services,
               private decimalPipe: DecimalPipe) {
+    this.deshabilitarEliminar = false;
     this.lista = [];
     this.format = '1.2-2';
     this.presupuesto = new Presupuesto(0, '', 0);
@@ -118,17 +120,17 @@ export class HomeComponent implements OnInit {
   }
 
   eliminar(obj: any): void {
-
+    this.deshabilitarEliminar = true;
     this.service.deleteEntity('gastosIngresos', obj.id).subscribe( res => {
+      this.deshabilitarEliminar = false;
     }, error2 => {
+      this.deshabilitarEliminar = false;
       console.error(error2);
     });
 
     if (obj.gastoIngreso === 'I') {
       this.presupuesto.capital = Number(this.presupuesto.capital) - Number(obj.valor);
-      console.log('this.presupuesto.capital: ', this.presupuesto.capital);
     } else {
-      console.log('this.presupuesto.capital2: ', this.presupuesto.capital);
       this.presupuesto.capital = Number(this.presupuesto.capital) + Number(obj.valor);
     }
 
