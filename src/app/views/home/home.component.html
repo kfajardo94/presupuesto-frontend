@@ -1,1 +1,55 @@
 <app-header></app-header>
+<div style="position: relative; background: #d3cd82; height: 100vh;">
+    <div style="margin: 0 auto; width: 45%; padding-top: 20px;">
+      <form [formGroup]="formPresupuesto">
+        <div style="display: grid;
+          grid-template-columns: 35% 65%;">
+          <label>Descripción</label>
+          <textarea type="text" class="form-control" formControlName="descripcion" rows="4" cols="5" maxlength="600"></textarea>
+          <label>Capital</label>
+          <input type="text" class="form-control" formControlName="capital">
+        </div>
+      </form>
+      <button type="button" *ngIf="presupuesto.id === 0" (click)="crear()">Crear</button>
+    </div>
+    <div *ngIf="presupuesto.id > 0" style="margin: 0 auto; width: 45%; padding-top: 20px;">
+      <form [formGroup]="formGastoIngreso">
+        <div style="display: grid;
+            grid-template-columns: 35% 65%;">
+          <label>Concepto</label>
+          <textarea type="text" class="form-control" formControlName="descripcion" rows="4" cols="5" maxlength="150"></textarea>
+          <label>Valor</label>
+          <input type="text" class="form-control" formControlName="valor" maxlength="10">
+          <label>Gasto/Ingreso</label>
+          <select class="form-control" formControlName="gastoIngreso">
+            <option value="G">Gasto</option>
+            <option value="I">Ingreso</option>
+          </select>
+        </div>
+      </form>
+      <button type="button" (click)="agregar()">Agregar</button>
+    </div>
+    <table *ngIf="lista.length > 0" style="width: 25vw; margin: 0 auto;">
+      <tr>
+        <th>
+          Concepto
+        </th>
+        <th>
+          Valor
+        </th>
+      </tr>
+      <tr *ngFor="let obj of lista">
+        <td>
+          {{obj.descripcion}}
+        </td>
+        <td style="text-align: right">
+          {{obj.gastoIngreso == 'I' ? '+' : '-'}} Q{{obj.valor | number: '1.2-2'}}
+        </td>
+        <td style="text-align: right">
+          <button (click)="eliminar(obj)">Eliminar</button>
+        </td>
+      </tr>
+    </table>
+
+
+</div>
