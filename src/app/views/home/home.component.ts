@@ -119,37 +119,42 @@ export class HomeComponent implements OnInit {
 
   }
 
-  eliminar(obj: any): void {
+  async eliminar(obj: any): Promise<any> {
     this.deshabilitarEliminar = true;
-    this.service.deleteEntity('gastosIngresos', obj.id).subscribe( res => {
+    this.lista = [];
+    let total = 0;
+    await this.service.deleteAndGetEntitySincrono('gastosIngresos', obj.id, this.presupuesto.id).then( res => {
+      this.lista = res;
+      for (const gI of this.lista) {
+        if (gI.gastoIngreso === 'I') {
+          total = total + Number(gI.valor);
+        } else {
+          total = total - Number(gI.valor);
+        }
+      }
       this.deshabilitarEliminar = false;
-    }, error2 => {
+    }).catch(error2 => {
       this.deshabilitarEliminar = false;
       console.error(error2);
     });
 
-    if (obj.gastoIngreso === 'I') {
-      this.presupuesto.capital = Number(this.presupuesto.capital) - Number(obj.valor);
-    } else {
-      this.presupuesto.capital = Number(this.presupuesto.capital) + Number(obj.valor);
-    }
+    await this.service.getItemsFromEntityByMethodSincrono('gastosIngresos', 'getByIdPresupuesto', this.presupuesto.id).then( res2 => {
 
-    this.service.saveEntity('presupuesto', this.presupuesto).subscribe( res1 => {
-      this.presupuesto = res1;
-      this.formPresupuesto = new FormGroup({
-        descripcion: new FormControl(res1.descripcion),
-        capital: new FormControl({value: this.decimalPipe.transform(res1.capital, this.format), disabled: true})
-      });
+      this.presupuesto.capital = total;
 
-      this.lista = [];
-      this.service.getItemsFromEntityByMethod('gastosIngresos', 'getByIdPresupuesto', this.presupuesto.id).subscribe( res2 => {
-          this.lista = res2;
+      this.service.saveEntity('presupuesto', this.presupuesto).subscribe( res1 => {
+          this.presupuesto = res1;
+          this.formPresupuesto = new FormGroup({
+            descripcion: new FormControl(res1.descripcion),
+            capital: new FormControl({value: this.decimalPipe.transform(res1.capital, this.format), disabled: true})
+          });
+
         }, error => {
           console.error(error);
         }
       );
 
-    }, error1 => {
+    }).catch(error1 => {
       console.error(error1);
     });
 

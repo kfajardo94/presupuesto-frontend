@@ -36,6 +36,17 @@ export class Services {
     return this.http.get(this.URL + '/' + entity + '/' + method + '?idPresupuesto=' + value, {headers});
   }
 
+  getItemsFromEntityByMethodSincrono(entity: string, method: string, value: any): Promise<any> {
+
+    const headers = new HttpHeaders({
+      'Access-Control-Allow-Headers' : 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': '*'
+    });
+
+    return this.http.get(this.URL + '/' + entity + '/' + method + '?idPresupuesto=' + value, {headers}).toPromise();
+  }
+
   getItemsFromEntityByFields(entity: string, method: string, fields: UrlField[]): Observable<any> {
 
     const headers = new HttpHeaders({
@@ -79,14 +90,24 @@ export class Services {
     return this.http.put(this.URL + '/' + entity, body, {headers});
   }
 
-  deleteEntity(entity: string, id: number): Observable<any>{
+  deleteAndGetEntity(entity: string, id: number, idPresupuesto: number): Observable<any>{
     const headers = new HttpHeaders({
       'Access-Control-Allow-Headers' : 'Content-Type',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': '*'
     });
 
-    return this.http.delete(this.URL + '/' + entity + '/deleteById?id=' + id,  {headers});
+    return this.http.get(this.URL + '/' + entity + '/deleteById?id=' + id + '&idPresupuesto=' + idPresupuesto,  {headers});
+  }
+
+  deleteAndGetEntitySincrono(entity: string, id: number, idPresupuesto: number): Promise<any>{
+    const headers = new HttpHeaders({
+      'Access-Control-Allow-Headers' : 'Content-Type',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': '*'
+    });
+
+    return this.http.get(this.URL + '/' + entity + '/deleteById?id=' + id + '&idPresupuesto=' + idPresupuesto,  {headers}).toPromise();
   }
 
 }
